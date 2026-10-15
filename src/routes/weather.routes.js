@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getCityWeather } from '../lib/weather.js';
+import { getCityWeather, getCacheStats } from '../lib/weather.js';
 import { parseCity, parseCities } from '../validators/weather-query.js';
 import { HttpError } from '../lib/http-error.js';
 
@@ -109,4 +109,12 @@ weatherRouter.get('/compare', async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+weatherRouter.get('/cache/stats', (req, res) => {
+  const stats = getCacheStats();
+
+  res.status(200).json({
+    data: stats
+  });
 });
