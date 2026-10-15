@@ -6,6 +6,20 @@ import { buildCache } from './cache.js';
 const cache = buildCache(config.cacheTtlSeconds);
 
 export async function getCityWeather(city) {
+  const key = city.trim().toLowerCase();
+
+  const cachedWeather = cache.get(key)
+
+  if (cachedWeather !== undefined) {
+    return {
+      location: cachedWeather.location,
+      current: cachedWeather.current,
+      daily: cachedWeather.daily,
+      fetchedAt: cachedWeather.fetchedAt,
+      cached: true
+    };
+  }
+
   const location = await geocodeCity(city);
 
   const forecast = await getForecast(
@@ -16,7 +30,7 @@ export async function getCityWeather(city) {
   const current = forecast.current;
   const daily = forecast.daily;
 
-  return {
+  const weather = {
     location: location,
 
     current: {
@@ -41,6 +55,10 @@ export async function getCityWeather(city) {
     fetchedAt: new Date().toISOString(),
     cached: false
   };
+
+  cache.set(key, weather);
+
+  return weather;
 }
 
 export function getCacheStats() {
