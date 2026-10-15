@@ -2,18 +2,45 @@ import { config } from '../config.js';
 import { geocodeCity, getForecast } from './open-meteo.js';
 import { describeWeatherCode } from './weather-codes.js';
 
-// TODO (you): create one cache for the whole app, with a time to live of
-// config.cacheTtlSeconds.
-
-// TODO (you): return the weather summary for one city, in the shape shown on
-// the assignment page. Check the cache first. On a miss, geocode the city, get
-// the forecast, build the summary, store it, and return it with cached: false.
-// On a hit, return the stored summary with cached: true.
 export async function getCityWeather(city) {
-  throw new Error('getCityWeather is not written yet');
+  const location = await geocodeCity(city);
+
+  const forecast = await getForecast(
+    location.latitude, 
+    location.longitude
+  );
+
+  const current = forecast.current;
+  const daily = forecast.daily;
+
+  return {
+    location: location,
+
+    current: {
+      time: current.time,
+      temperatureC: current.temperature_2m,
+      feelsLikeC: current.apparent_temperature,
+      humidity: current.relativehumidity_2m,
+      windSpeedKmh: current.windspeed_10m,
+      weatherCode: current.weathercode,
+      condition: describeWeatherCode(current.weathercode),
+    },
+
+    daily: daily.time.map((date, index) => ({
+      date: date,
+      temperatureMinC: daily.temperature_2m_min[index],
+      temperatureMaxC: daily.temperature_2m_max[index],
+      precipitationProbability: daily.precipitation_probability_max[index],
+      weatherCode: daily.weathercode[index],
+      condition: describeWeatherCode(daily.weathercode[index]),
+    })),
+
+    fetchedAt: new Date().toISOString(),
+    cached: false
+  };
 }
 
-// TODO (you): return the cache statistics for GET /api/cache/stats.
-export function getCacheStats() {
-  throw new Error('getCacheStats is not written yet');
-}
+// // TODO (you): return the cache statistics for GET /api/cache/stats.
+// export function getCacheStats() {
+//   throw new Error('getCacheStats is not written yet');
+// }
