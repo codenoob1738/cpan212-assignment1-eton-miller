@@ -1,6 +1,9 @@
 import { config } from '../config.js';
 import { geocodeCity, getForecast } from './open-meteo.js';
 import { describeWeatherCode } from './weather-codes.js';
+import { buildCache } from './cache.js';
+
+const cache = buildCache(config.cacheTtlSeconds);
 
 export async function getCityWeather(city) {
   const location = await geocodeCity(city);
@@ -40,7 +43,6 @@ export async function getCityWeather(city) {
   };
 }
 
-// // TODO (you): return the cache statistics for GET /api/cache/stats.
-// export function getCacheStats() {
-//   throw new Error('getCacheStats is not written yet');
-// }
+export function getCacheStats() {
+  return cache.details();
+}
