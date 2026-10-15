@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { getCityWeather } from '../lib/weather';
-import { parseCity, parseCities } from '../validators/weather-query';
-import { HttpError } from '../lib/http-error';
+import { getCityWeather } from '../lib/weather.js';
+import { parseCity, parseCities } from '../validators/weather-query.js';
+import { HttpError } from '../lib/http-error.js';
 
 export const weatherRouter = Router();
 

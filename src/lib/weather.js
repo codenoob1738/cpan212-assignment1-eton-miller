@@ -37,10 +37,10 @@ export async function getCityWeather(city) {
       time: current.time,
       temperatureC: current.temperature_2m,
       feelsLikeC: current.apparent_temperature,
-      humidity: current.relativehumidity_2m,
-      windSpeedKmh: current.windspeed_10m,
-      weatherCode: current.weathercode,
-      condition: describeWeatherCode(current.weathercode),
+      humidity: current.relative_humidity_2m,
+      windSpeedKmh: current.wind_speed_10m,
+      weatherCode: current.weather_code,
+      condition: describeWeatherCode(current.weather_code),
     },
 
     daily: daily.time.map((date, index) => ({
@@ -48,8 +48,8 @@ export async function getCityWeather(city) {
       temperatureMinC: daily.temperature_2m_min[index],
       temperatureMaxC: daily.temperature_2m_max[index],
       precipitationProbability: daily.precipitation_probability_max[index],
-      weatherCode: daily.weathercode[index],
-      condition: describeWeatherCode(daily.weathercode[index]),
+      weatherCode: daily.weather_code[index],
+      condition: describeWeatherCode(daily.weather_code[index]),
     })),
 
     fetchedAt: new Date().toISOString(),
